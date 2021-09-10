@@ -189,6 +189,7 @@ static probe_state_t probe = {
 #error Interrupt enabled input pins must have unique pin numbers!
 #endif
 
+void disk_timerproc (void);
 static void spindle_set_speed (uint_fast16_t pwm_value);
 
 static void driver_delay (uint32_t ms, void (*callback)(void))
