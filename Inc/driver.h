@@ -74,6 +74,8 @@
   #include "cnc3040_map.h"
 #elif defined(BOARD_MY_MACHINE)
   #include "my_machine_map.h"
+#elif defined(BTT_SKR_MINI_11)
+  #include "btt_skr_mini_1.1_map.h"
 #elif defined(BTT_SKR_MINI_E3_V20)
   #include "btt_skr_mini_e3_2.0_map.h"
 #else // default board
@@ -117,7 +119,7 @@
 #error SD card plugin not supported!
 #endif
 
-#if TRINAMIC_ENABLE && !(defined(BOARD_CNC_BOOSTERPACK) || defined(BTT_SKR_MINI_E3_V20) || defined(TRINAMIC_DEBUG))
+#if TRINAMIC_ENABLE && !(defined(BOARD_CNC_BOOSTERPACK) || defined(BTT_SKR_MINI_11) || defined(BTT_SKR_MINI_E3_V20) || defined(TRINAMIC_DEBUG))
 #error Trinamic plugin not supported!
 #endif
 

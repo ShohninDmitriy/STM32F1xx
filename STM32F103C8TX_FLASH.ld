@@ -58,11 +58,14 @@ _estack = 0x20005000;	/* end of "RAM" Ram type memory */
 _Min_Heap_Size = 0x800 ;	/* required amount of heap  */
 _Min_Stack_Size = 0x800 ;	/* required amount of stack */
 
+/* Dummy symbol we can override using -Wl,--defsym on the command line */
+LD_VECT_TAB_OFFSET = DEFINED(LD_VECT_TAB_OFFSET)? LD_VECT_TAB_OFFSET : 0;
+
 /* Memories definition */
 MEMORY
 {
-    FLASH	(rx)	: ORIGIN = 0x8000000,	LENGTH = 128K
-    RAM	(rwx)	: ORIGIN = 0x20000000,	LENGTH = 20K
+    FLASH  (rx) 	: ORIGIN = 0x8000000+LD_VECT_TAB_OFFSET,	LENGTH = 128K-LD_VECT_TAB_OFFSET
+    RAM	   (rwx)	: ORIGIN = 0x20000000,				LENGTH = 20K
 }
 
 /* Sections */
