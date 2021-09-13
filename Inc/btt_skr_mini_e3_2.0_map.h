@@ -41,8 +41,8 @@
 #define TRINAMIC_MIXED_DRIVERS 0
 
 #if EEPROM_ENABLE < 2
-#undef EEPROM_ENABLE
-#define EEPROM_ENABLE 3 // 32Kbit EEPROM, 32byte page size
+ #undef EEPROM_ENABLE
+ #define EEPROM_ENABLE 3 // 32Kbit EEPROM, 32byte page size
 #endif
 
 // Define step pulse output pins.

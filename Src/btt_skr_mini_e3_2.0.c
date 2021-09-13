@@ -23,6 +23,8 @@
 
 #include "driver.h"
 
+#ifdef BTT_SKR_MINI_E3_V20
+
 #if TRINAMIC_ENABLE == 2209
 
 #include <string.h>
@@ -99,4 +101,5 @@ void board_init (void)
     btt_skr_mini_e3_enable_usb();
 }
 
+#endif
 #endif

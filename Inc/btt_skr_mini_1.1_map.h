@@ -28,17 +28,17 @@
 #endif
 
 #define I2C_PORT 1
-#define SERIAL2_MOD
-//#define HAS_BOARD_INIT
 
-//#ifdef TRINAMIC_ENABLE
-//#undef TRINAMIC_ENABLE
-//#endif
-//#ifdef TRINAMIC_MIXED_DRIVERS
-//#undef TRINAMIC_MIXED_DRIVERS
-//#endif
-//#define TRINAMIC_ENABLE 2209
-//#define TRINAMIC_MIXED_DRIVERS 0
+#ifdef TRINAMIC
+ #undef TRINAMIC_ENABLE
+ #ifdef TRINAMIC_MIXED_DRIVERS
+  #undef TRINAMIC_MIXED_DRIVERS
+ #endif
+ #define SERIAL2_MOD
+ #define HAS_BOARD_INIT
+ #define TRINAMIC_ENABLE 2209
+ #define TRINAMIC_MIXED_DRIVERS 0
+#endif
 
 //#if EEPROM_ENABLE < 2
 //#undef EEPROM_ENABLE
@@ -111,7 +111,7 @@
 #define FEED_HOLD_PIN           13 //PC13
 #define CYCLE_START_PIN         3 //PC3
 #if SAFETY_DOOR_ENABLE
-#define SAFETY_DOOR_PIN         14 //PC14
+ #define SAFETY_DOOR_PIN         14 //PC14
 #endif
 #define CONTROL_INMODE GPIO_MAP
 
@@ -120,17 +120,17 @@
 #define PROBE_PIN               2 //PC3
 
 #if KEYPAD_ENABLE
-#define KEYPAD_PORT             GPIOA
-#define KEYPAD_STROBE_PIN       1 //PA1
+ #define KEYPAD_PORT             GPIOA
+ #define KEYPAD_STROBE_PIN       1 //PA1
 #endif
 
 #if SDCARD_ENABLE
-#define SD_CS_PORT  GPIOA
-#define SD_CS_PIN   4 //PA4
+ #define SD_CS_PORT  GPIOA
+ #define SD_CS_PIN   4 //PA4
 // The following defines are not used but defined for reference
 // Port init is done by HAL_SPI_MspInit() in stm32f1xx_hal_msp.c
-#define SD_IO_PORT  GPIOA
-#define SD_SCK_PIN  5 //PA5
-#define SD_MISO_PIN 6 //PA6
-#define SD_MOSI_PIN 7 //PA7
+ #define SD_IO_PORT  GPIOA
+ #define SD_SCK_PIN  5 //PA5
+ #define SD_MISO_PIN 6 //PA6
+ #define SD_MOSI_PIN 7 //PA7
 #endif
