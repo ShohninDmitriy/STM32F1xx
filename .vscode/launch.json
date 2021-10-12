@@ -1,0 +1,36 @@
+// AUTOMATICALLY GENERATED FILE. PLEASE DO NOT MODIFY IT MANUALLY
+//
+// PIO Unified Debugger
+//
+// Documentation: https://docs.platformio.org/page/plus/debugging.html
+// Configuration: https://docs.platformio.org/page/projectconf/section_env_debug.html
+
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "platformio-debug",
+            "request": "launch",
+            "name": "PIO Debug",
+            "executable": "f:/3d printer/soft/cnc_laser/STM32F1xx/.pio/build/BTT_SKR_MINI_11_USB/firmware.elf",
+            "projectEnvName": "BTT_SKR_MINI_11_USB",
+            "toolchainBinDir": "C:/Users/dima/.platformio/packages/toolchain-gccarmnoneeabi@1.70201.0/bin",
+            "internalConsoleOptions": "openOnSessionStart",
+            "svdPath": "C:/Users/dima/.platformio/platforms/ststm32/misc/svd/STM32F103xx.svd",
+            "preLaunchTask": {
+                "type": "PlatformIO",
+                "task": "Pre-Debug (BTT_SKR_MINI_11_USB)"
+            }
+        },
+        {
+            "type": "platformio-debug",
+            "request": "launch",
+            "name": "PIO Debug (skip Pre-Debug)",
+            "executable": "f:/3d printer/soft/cnc_laser/STM32F1xx/.pio/build/BTT_SKR_MINI_11_USB/firmware.elf",
+            "projectEnvName": "BTT_SKR_MINI_11_USB",
+            "toolchainBinDir": "C:/Users/dima/.platformio/packages/toolchain-gccarmnoneeabi@1.70201.0/bin",
+            "internalConsoleOptions": "openOnSessionStart",
+            "svdPath": "C:/Users/dima/.platformio/platforms/ststm32/misc/svd/STM32F103xx.svd"
+        }
+    ]
+}
