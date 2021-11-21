@@ -64,6 +64,24 @@
 #include "flash.h"
 #endif
 
+#if !I2C_STROBE_ENABLE
+#define I2C_STROBE_BIT 0
+#endif
+
+#if !SAFETY_DOOR_ENABLE
+#define SAFETY_DOOR_BIT 0
+#endif
+
+#if CONTROL_MASK != (RESET_BIT+FEED_HOLD_BIT+CYCLE_START_BIT+SAFETY_DOOR_BIT)
+#error Interrupt enabled input pins must have unique pin numbers!
+#endif
+
+#define DRIVER_IRQMASK (LIMIT_MASK|CONTROL_MASK|I2C_STROBE_BIT)
+
+#if DRIVER_IRQMASK != (LIMIT_MASK+CONTROL_MASK+I2C_STROBE_BIT)
+#error Interrupt enabled input pins must have unique pin numbers!
+#endif
+
 typedef union {
     uint8_t mask;
     struct {
@@ -85,8 +103,8 @@ static input_signal_t inputpin[] = {
 #ifdef PROBE_PIN
     { .id = Input_Probe,          .port = PROBE_PORT,         .pin = PROBE_PIN,           .group = PinGroup_Probe },
 #endif
-#ifdef KEYPAD_STROBE_PIN
-    { .id = Input_KeypadStrobe,   .port = KEYPAD_PORT,        .pin = KEYPAD_STROBE_PIN,   .group = PinGroup_Keypad },
+#ifdef I2C_STROBE_PIN
+    { .id = Input_KeypadStrobe,   .port = I2C_STROBE_PORT,        .pin = I2C_STROBE_PIN,   .group = PinGroup_Keypad },
 #endif
 #ifdef MODE_SWITCH_PIN
     { .id = Input_ModeSelect,     .port = MODE_PORT,          .pin = MODE_SWITCH_PIN,     .group = PinGroup_MPG },
@@ -171,22 +189,20 @@ static probe_state_t probe = {
     .connected = On
 };
 
-#if KEYPAD_ENABLE == 0
-#define KEYPAD_STROBE_BIT 0
-#endif
+#if I2C_STROBE_ENABLE
 
-#if !SAFETY_DOOR_ENABLE
-#define SAFETY_DOOR_BIT 0
-#endif
+static driver_irq_handler_t i2c_strobe = { .type = IRQ_I2C_Strobe };
 
-#if CONTROL_MASK != (RESET_BIT+FEED_HOLD_BIT+CYCLE_START_BIT+SAFETY_DOOR_BIT)
-#error Interrupt enabled input pins must have unique pin numbers!
-#endif
+static bool irq_claim (irq_type_t irq, uint_fast8_t id, irq_callback_ptr handler)
+{
+    bool ok;
 
-#define DRIVER_IRQMASK (LIMIT_MASK|CONTROL_MASK|KEYPAD_STROBE_BIT)
+    if((ok = irq == IRQ_I2C_Strobe && i2c_strobe.callback == NULL))
+        i2c_strobe.callback = handler;
 
-#if DRIVER_IRQMASK != (LIMIT_MASK+CONTROL_MASK+KEYPAD_STROBE_BIT)
-#error Interrupt enabled input pins must have unique pin numbers!
+    return ok;
+}
+
 #endif
 
 static void spindle_set_speed (uint_fast16_t pwm_value);
@@ -388,7 +404,7 @@ static control_signals_t systemGetState (void)
     signals.reset = BITBAND_PERI(CONTROL_PORT->IDR, RESET_PIN);
     signals.feed_hold = BITBAND_PERI(CONTROL_PORT->IDR, FEED_HOLD_PIN);
     signals.cycle_start = BITBAND_PERI(CONTROL_PORT->IDR, CYCLE_START_PIN);
- #ifdef ENABLE_SAFETY_DOOR_INPUT_PIN
+ #ifdef SAFETY_DOOR_PIN
     signals.safety_door_ajar = BITBAND_PERI(CONTROL_PORT->IDR, SAFETY_DOOR_PIN);
  #endif
 #elif CONTROL_INMODE == GPIO_MAP
@@ -396,12 +412,12 @@ static control_signals_t systemGetState (void)
     signals.reset = (bits & RESET_BIT) != 0;
     signals.feed_hold = (bits & FEED_HOLD_BIT) != 0;
     signals.cycle_start = (bits & CYCLE_START_BIT) != 0;
- #ifdef ENABLE_SAFETY_DOOR_INPUT_PIN
+ #ifdef SAFETY_DOOR_PIN
     signals.safety_door_ajar = (bits & SAFETY_DOOR_BIT) != 0;
  #endif
 #else
     signals.value = (uint8_t)((CONTROL_PORT->IDR & CONTROL_MASK) >> CONTROL_INMODE);
- #ifndef ENABLE_SAFETY_DOOR_INPUT_PIN
+ #ifndef SAFETY_DOOR_PIN
  	signals.safety_door_ajar = settings.control_invert.safety_door_ajar;
  #endif
 #endif
@@ -989,11 +1005,7 @@ static bool driver_setup (settings_t *settings)
     on_unknown_sys_command = grbl.on_unknown_sys_command;
     grbl.on_unknown_sys_command = jtag_enable;
 
-#if N_AXIS > 3
-    IOInitDone = settings->version == 20;
-#else
-    IOInitDone = settings->version == 19;
-#endif
+    IOInitDone = settings->version == 21;
 
     hal.settings_changed(settings);
     hal.spindle.set_state((spindle_state_t){0}, 0.0f);
@@ -1019,7 +1031,7 @@ bool driver_init (void)
     __HAL_AFIO_REMAP_SWJ_NOJTAG();
 
     hal.info = "STM32F103C8";
-    hal.driver_version = "210930";
+    hal.driver_version = "211121";
 #ifdef BOARD_NAME
     hal.board = BOARD_NAME;
 #endif
@@ -1060,6 +1072,9 @@ bool driver_init (void)
 
     hal.irq_enable = __enable_irq;
     hal.irq_disable = __disable_irq;
+#if I2C_STROBE_ENABLE
+    hal.irq_claim = irq_claim;
+#endif
     hal.set_bits_atomic = bitsSetAtomic;
     hal.clear_bits_atomic = bitsClearAtomic;
     hal.set_value_atomic = valueSetAtomic;
@@ -1118,7 +1133,7 @@ bool driver_init (void)
 
     // No need to move version check before init.
     // Compiler will fail any signature mismatch for existing entries.
-    return hal.version == 8;
+    return hal.version == 9;
 }
 
 /* interrupt handlers */
@@ -1403,9 +1418,9 @@ void EXTI15_10_IRQHandler(void)
                 hal.limits.interrupt_callback(limitsGetState());
         }
 #endif
-#if KEYPAD_ENABLE
-        if(ifg & KEYPAD_STROBE_BIT)
-            keypad_keyclick_handler(BITBAND_PERI(KEYPAD_PORT->IDR, KEYPAD_STROBE_PIN));
+#if I2C_STROBE_ENABLE
+        if((ifg & I2C_STROBE_BIT) && i2c_strobe.callback)
+            i2c_strobe.callback(0, BITBAND_PERI(I2C_STROBE_PORT->IDR, I2C_STROBE_PIN) == 0);
 #endif
     }
 }
