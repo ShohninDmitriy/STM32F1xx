@@ -156,10 +156,10 @@ static bool serialSuspendInput (bool suspend)
     return stream_rx_suspend(&rxbuf, suspend);
 }
 
-/*static bool serialEnqueueRtCommand (char c)
+static bool serialEnqueueRtCommand (char c)
 //{
     return enqueue_realtime_command(c);
-}*/
+}
 
 static enqueue_realtime_command_ptr serialSetRtHandler (enqueue_realtime_command_ptr handler)
 {

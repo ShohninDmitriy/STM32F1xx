@@ -195,10 +195,10 @@ static bool usbSuspendInput (bool suspend)
     return stream_rx_suspend(&rxbuf, suspend);
 }
 
-/*static bool usbEnqueueRtCommand (char c)
+static bool usbEnqueueRtCommand (char c)
 {
     return enqueue_realtime_command(c);
-}*/
+}
 
 static enqueue_realtime_command_ptr usbSetRtHandler (enqueue_realtime_command_ptr handler)
 {
