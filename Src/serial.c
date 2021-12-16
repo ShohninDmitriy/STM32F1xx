@@ -175,13 +175,12 @@ const io_stream_t *serialInit (void)
 {
     static const io_stream_t stream = {
         .type = StreamType_Serial,
-        .state.connected = true,
+        .state.connected = On,
         .read = serialGetC,
         .write = serialWriteS,
         .write_char = serialPutC,
         .write_n =  serialWrite,
-        .write_all = serialWriteS,
-//        .enqueue_rt_command = serialEnqueueRtCommand,
+        .enqueue_rt_command = serialEnqueueRtCommand,
         .get_rx_buffer_free = serialRxFree,
         .get_rx_buffer_count = serialRxCount,
         .get_tx_buffer_count = serialTxCount,
@@ -408,13 +407,12 @@ const io_stream_t *serial2Init (void)
 {
     static const io_stream_t stream = {
         .type = StreamType_Serial,
-        .state.connected = true,
+        .state.connected = On,
         .read = serial2GetC,
         .write = serial2WriteS,
         .write_n =  serial2Write,
         .write_char = serial2PutC,
-        .write_all = serial2WriteS,
-//        .enqueue_rt_command = serial2EnqueueRtCommand,
+        .enqueue_rt_command = serial2EnqueueRtCommand,
         .get_rx_buffer_free = serial2RxFree,
         .get_rx_buffer_count = serial2RxCount,
         .get_tx_buffer_count = serial2TxCount,

@@ -1032,7 +1032,7 @@ bool driver_init (void)
     __HAL_AFIO_REMAP_SWJ_NOJTAG();
 
     hal.info = "STM32F103C8";
-    hal.driver_version = "211203";
+    hal.driver_version = "211209";
 #ifdef BOARD_NAME
     hal.board = BOARD_NAME;
 #endif
@@ -1083,9 +1083,9 @@ bool driver_init (void)
     hal.enumerate_pins = enumeratePins;
 
 #if USB_SERIAL_CDC
-    memcpy(&hal.stream, usbInit(), sizeof(io_stream_t));
+    stream_connect(usbInit());
 #else
-    memcpy(&hal.stream, serialInit(), sizeof(io_stream_t));
+    stream_connect(serialInit());
 #endif
 
 #if EEPROM_ENABLE

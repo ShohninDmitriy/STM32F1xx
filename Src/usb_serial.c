@@ -214,12 +214,12 @@ const io_stream_t *usbInit (void)
 {
     static const io_stream_t stream = {
         .type = StreamType_Serial,
+        .state.is_usb = On,
         .read = usbGetC,
         .write = usbWriteS,
         .write_char = usbPutC,
         .write_n = usbWrite,
-        .write_all = usbWriteS,
-//        .enqueue_rt_command = usbEnqueueRtCommand,
+        .enqueue_rt_command = usbEnqueueRtCommand,
         .get_rx_buffer_free = usbRxFree,
         .reset_read_buffer = usbRxFlush,
         .cancel_read_buffer = usbRxCancel,
