@@ -33,7 +33,7 @@ build
 # Operating System Files
 # =========================
 
-.vscode/*
+.vscode*
 .pio*
 .pioenvs
 .piolibdeps
