@@ -19,7 +19,7 @@
             "svdPath": "C:/Users/Dima/.platformio/platforms/ststm32/misc/svd/STM32F103xx.svd",
             "preLaunchTask": {
                 "type": "PlatformIO",
-                "task": "Pre-Debug"
+                "task": "Pre-Debug (BTT_SKR_MINI_11_USB)"
             }
         },
         {
