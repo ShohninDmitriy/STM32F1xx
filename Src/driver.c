@@ -30,7 +30,7 @@
 #include "driver.h"
 #include "serial.h"
 
-#include "grbl/limits.h"
+#include "grbl/machine_limits.h"
 #include "grbl/motor_pins.h"
 #include "grbl/pin_bits_masks.h"
 #include "grbl/state_machine.h"
@@ -872,7 +872,7 @@ static char *port2char (GPIO_TypeDef *port)
     return name;
 }
 
-static void enumeratePins (bool low_level, pin_info_ptr pin_info)
+static void enumeratePins (bool low_level, pin_info_ptr pin_info, void *data)
 {
     static xbar_t pin = {0};
     uint32_t i = sizeof(inputpin) / sizeof(input_signal_t);
@@ -887,7 +887,7 @@ static void enumeratePins (bool low_level, pin_info_ptr pin_info)
         pin.description = inputpin[i].description;
         pin.mode.pwm = pin.group == PinGroup_SpindlePWM;
 
-        pin_info(&pin);
+        pin_info(&pin, data);
     };
 
     pin.mode.mask = 0;
@@ -900,7 +900,7 @@ static void enumeratePins (bool low_level, pin_info_ptr pin_info)
         pin.port = low_level ? (void *)outputpin[i].port : (void *)port2char(outputpin[i].port);
         pin.description = outputpin[i].description;
 
-        pin_info(&pin);
+        pin_info(&pin, data);
     };
 
 #ifdef SPINDLE_PWM_TIMER_N
@@ -909,7 +909,7 @@ static void enumeratePins (bool low_level, pin_info_ptr pin_info)
     pin.group = PinGroup_SpindlePWM;
     pin.port = low_level ? (void *)SPINDLE_PWM_PORT : (void *)port2char(SPINDLE_PWM_PORT);
     pin.description = NULL;
-    pin_info(&pin);
+    pin_info(&pin, data);
 #endif
 }
 
@@ -1047,7 +1047,7 @@ bool driver_init (void)
     __HAL_AFIO_REMAP_SWJ_NOJTAG();
 
     hal.info = "STM32F103C8";
-    hal.driver_version = "220710";
+    hal.driver_version = "220907";
 #ifdef BOARD_NAME
     hal.board = BOARD_NAME;
 #endif
@@ -1155,7 +1155,7 @@ bool driver_init (void)
 
     // No need to move version check before init.
     // Compiler will fail any signature mismatch for existing entries.
-    return hal.version == 9;
+    return hal.version == 10;
 }
 
 /* interrupt handlers */
