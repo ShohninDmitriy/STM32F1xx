@@ -103,6 +103,8 @@
   #include "my_machine_map.h"
 #elif defined(BOARD_BTT_SKR_MINI_11)
   #include "btt_skr_mini_1.1_map.h"
+#elif defined(BOARD_SVM)
+  #include "svm_map.h"
 #else // default board
   #include "generic_map.h"
 #endif
@@ -118,7 +120,7 @@
   #if SPINDLE_PWM_PIN == 1 // PA1 - TIM5_CH2
     #define SPINDLE_PWM_TIMER_N     5
     #define SPINDLE_PWM_TIMER_CH    2
-    #define SPINDLE_PWM_TIMER_INV   1
+    #define SPINDLE_PWM_TIMER_INV   0
     #define SPINDLE_PWM_AF_REMAP    0
   #elif SPINDLE_PWM_PIN == 8 // PA8 - TIM1_CH1
     #define SPINDLE_PWM_TIMER_N     1

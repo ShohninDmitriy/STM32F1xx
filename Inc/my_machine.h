@@ -27,6 +27,7 @@
 #define BOARD_BTT_SKR_MINI_11
 //#define BOARD_BTT_SKR_MINI_E3_V20
 //#define BOARD_BTT_SKR_MINI_E3_V20_ALT2
+//#define BOARD_SVM
 //#define BOARD_MY_MACHINE // Add my_machine_map.h before enabling this!
 
 // Configuration
@@ -50,4 +51,18 @@
 //#define EEPROM_ENABLE      2 // I2C EEPROM support. Set to 1 for 24LC16(2K), 2 for larger sizes. Requires eeprom plugin.
 //#define EEPROM_IS_FRAM     1 // Uncomment when EEPROM is enabled and chip is FRAM, this to remove write delay.
 
-/**/
+// If the selected board map supports more than three motors ganging and/or auto-squaring
+// of axes can be enabled here.
+//#define X_GANGED            1
+//#define X_AUTO_SQUARE       1
+//#define Y_GANGED            1
+//#define Y_AUTO_SQUARE       1
+//#define Z_GANGED            1
+//#define Z_AUTO_SQUARE       1
+// For ganged axes the limit switch input (if available) can be configured to act as a max travel limit switch.
+// NOTE: If board map already has max limit inputs defined this configuration will be ignored.
+//#define X_GANGED_LIM_MAX    1
+//#define Y_GANGED_LIM_MAX    1
+//#define Z_GANGED_LIM_MAX    1
+//
+

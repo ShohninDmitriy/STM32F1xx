@@ -35,6 +35,7 @@
       "name": "CNC 3040 (Red/Bluepill 128K)",
       "symbol": "BOARD_CNC3040",
       "URL": "https://github.com/shaise/GrblCNC",
+      "MAP": "Inc/cnc3040_map.h",
       "caps": {
         "axes": 5,
         "auto_square": 0,
@@ -56,8 +57,10 @@
       "name": "BTT SKR MINI E3 V2.0 4-axis (Bootloader)",
       "symbol": "BOARD_BTT_SKR_MINI_E3_V20",
       "URL": "https://github.com/bigtreetech/BIGTREETECH-SKR-mini-E3",
+      "MAP": "Inc/btt_skr_mini_e3_2.0_map.h",
       "caps": {
         "axes": 4,
+		"auto_square": 1,
         "digital_in": 0,
         "digital_out": 0,
         "eeprom": 3,
@@ -79,8 +82,10 @@
       "name": "BTT SKR MINI E3 V2.0 4-axis Alt2 (Bootloader)",
       "symbol": "BOARD_BTT_SKR_MINI_E3_V20_ALT2",
       "URL": "https://github.com/bigtreetech/BIGTREETECH-SKR-mini-E3",
+      "MAP": "Inc/btt_skr_mini_e3_2.0_alt2_map.h",
       "caps": {
         "axes": 4,
+		"auto_square": 1,
         "digital_in": 0,
         "digital_out": 0,
         "eeprom": 3,
@@ -101,10 +106,11 @@
     {
       "name": "Mach3 USB breakout (BSMCE04U)",
       "symbol": "BOARD_MACH3_BOB",
-      "URL": "https://embeddedtronicsblog.wordpress.com/2021/02/05/4-axis-mach3-controller/",
+      "URL": "https://embeddedtronicsblog.wordpress.com/2023/05/17/grbl-running-on-the-4-axis-bsmce04-pp/",
+      "MAP": "Inc/mach3_bob_map.h",
       "caps": {
-        "axes": 5,
-        "auto_square": 0,
+        "axes": 4,
+        "auto_square": 1,
         "digital_in": 0,
         "digital_out": 1,
         "eeprom": 0,
@@ -120,11 +126,36 @@
       }
     },
     {
+      "name": "Mach3 USB breakout (BSMCE04U), 12 MHz crystal",
+      "symbol": "BOARD_MACH3_BOB",
+      "URL": "https://embeddedtronicsblog.wordpress.com/2023/05/17/grbl-running-on-the-4-axis-bsmce04-pp/",
+      "MAP": "Inc/mach3_bob_map.h",
+      "caps": {
+        "axes": 4,
+        "auto_square": 1,
+        "digital_in": 0,
+        "digital_out": 1,
+        "eeprom": 0,
+        "fram": 0,
+        "i2c": 0,
+        "sdcard": 0,
+        "trinamic": 0,
+        "pio_board": "genericSTM32F103RC",
+        "ldscript": "STM32F103RCTX_FLASH.ld"
+      },
+      "symbols": {
+          "STM32F103xE": "",
+          "HSE_VALUE": 12000000
+      }
+    },
+    {
       "name": "SVM F103RC",
-      "symbol": "BOARD_BTT_SKR_MINI_E3_V20_ALT2",
+      "symbol": "BOARD_SVM",
       "URL": "https://github.com/grblHAL/core/discussions/250",
+      "MAP": "Inc/svm_map.h",
       "caps": {
         "axes": 6,
+        "auto_square": 3,
         "digital_in": 0,
         "digital_out": 0,
         "eeprom": 0,
@@ -137,8 +168,7 @@
         "ldscript": "STM32F103RCTX_FLASH.ld"
       },
       "symbols": {
-          "STM32F103xE": "",
-          "HAS_BOOTLOADER": ""
+          "STM32F103xE": ""
       }
     }    
   ]
