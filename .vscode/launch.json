@@ -12,25 +12,36 @@
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug",
-            "executable": "f:/3d printer/soft/cnc_laser/STM32F1xx/.pio/build/BTT_SKR_MINI_11_USB/firmware.elf",
-            "projectEnvName": "BTT_SKR_MINI_11_USB",
-            "toolchainBinDir": "C:/Users/dima/.platformio/packages/toolchain-gccarmnoneeabi@1.70201.0/bin",
+            "executable": "h:/f/3d printer/soft/cnc_laser/STM32F1xx/.pio/build/BTT_SKR_MINI_E3_V20/firmware.elf",
+            "projectEnvName": "BTT_SKR_MINI_E3_V20",
+            "toolchainBinDir": "C:/Users/Dima/.platformio/packages/toolchain-gccarmnoneeabi@1.70201.0/bin",
             "internalConsoleOptions": "openOnSessionStart",
-            "svdPath": "C:/Users/dima/.platformio/platforms/ststm32/misc/svd/STM32F103xx.svd",
+            "svdPath": "C:/Users/Dima/.platformio/platforms/ststm32/misc/svd/STM32F103xx.svd",
             "preLaunchTask": {
                 "type": "PlatformIO",
-                "task": "Pre-Debug (BTT_SKR_MINI_11_USB)"
+                "task": "Pre-Debug"
             }
         },
         {
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug (skip Pre-Debug)",
-            "executable": "f:/3d printer/soft/cnc_laser/STM32F1xx/.pio/build/BTT_SKR_MINI_11_USB/firmware.elf",
-            "projectEnvName": "BTT_SKR_MINI_11_USB",
-            "toolchainBinDir": "C:/Users/dima/.platformio/packages/toolchain-gccarmnoneeabi@1.70201.0/bin",
+            "executable": "h:/f/3d printer/soft/cnc_laser/STM32F1xx/.pio/build/BTT_SKR_MINI_E3_V20/firmware.elf",
+            "projectEnvName": "BTT_SKR_MINI_E3_V20",
+            "toolchainBinDir": "C:/Users/Dima/.platformio/packages/toolchain-gccarmnoneeabi@1.70201.0/bin",
             "internalConsoleOptions": "openOnSessionStart",
-            "svdPath": "C:/Users/dima/.platformio/platforms/ststm32/misc/svd/STM32F103xx.svd"
+            "svdPath": "C:/Users/Dima/.platformio/platforms/ststm32/misc/svd/STM32F103xx.svd"
+        },
+        {
+            "type": "platformio-debug",
+            "request": "launch",
+            "name": "PIO Debug (without uploading)",
+            "executable": "h:/f/3d printer/soft/cnc_laser/STM32F1xx/.pio/build/BTT_SKR_MINI_E3_V20/firmware.elf",
+            "projectEnvName": "BTT_SKR_MINI_E3_V20",
+            "toolchainBinDir": "C:/Users/Dima/.platformio/packages/toolchain-gccarmnoneeabi@1.70201.0/bin",
+            "internalConsoleOptions": "openOnSessionStart",
+            "svdPath": "C:/Users/Dima/.platformio/platforms/ststm32/misc/svd/STM32F103xx.svd",
+            "loadMode": "manual"
         }
     ]
 }
