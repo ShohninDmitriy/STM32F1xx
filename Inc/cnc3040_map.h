@@ -1,5 +1,5 @@
 /*
-  cnc3040_map.h - driver code for STM32F103C8 ARM processors
+  cnc3040_map.h - driver code for STM32F103xx ARM processors
 
   Part of grblHAL
 
@@ -84,7 +84,7 @@
 #define SPINDLE_DIRECTION_PIN   0
 
 // Define spindle PWM output pin.
-#define SPINDLE_PWM_PORT        GPIOA
+#define SPINDLE_PWM_PORT_BASE   GPIOA_BASE
 #define SPINDLE_PWM_PIN         8
 
 // Define flood and mist coolant enable output pins.
@@ -107,9 +107,8 @@
 #define PROBE_PORT              GPIOB
 #define PROBE_PIN               13
 
-#if I2C_STROBE_ENABLE
-#define I2C_STROBE_PORT         GPIOB
-#define I2C_STROBE_PIN          15
+#if KEYPAD_ENABLE == 1
+#error I2C keypad mode is not supported!
 #endif
 
 #if SDCARD_ENABLE

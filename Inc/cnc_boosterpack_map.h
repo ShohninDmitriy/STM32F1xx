@@ -1,5 +1,5 @@
 /*
-  cnc_boosterpack_map.h - driver code for STM32F4xx processor (on Blackpill board)
+  cnc_boosterpack_map.h - driver code for STM32F103xx processor (on Bluepill board)
 
   Part of grblHAL
 
@@ -74,7 +74,7 @@
 #define SPINDLE_DIRECTION_PIN   0
 
 // Define spindle PWM output pin.
-#define SPINDLE_PWM_PORT        GPIOA
+#define SPINDLE_PWM_PORT_BASE   GPIOA_BASE
 #define SPINDLE_PWM_PIN         8
 
 // Define flood and mist coolant enable output pins.

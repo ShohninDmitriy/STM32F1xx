@@ -35,6 +35,7 @@ int main(void)
     __HAL_RCC_GPIOA_CLK_ENABLE();
     __HAL_RCC_GPIOB_CLK_ENABLE();
     __HAL_RCC_GPIOC_CLK_ENABLE();
+    __HAL_RCC_GPIOD_CLK_ENABLE();
 
     grbl_enter();
 }
@@ -56,7 +57,11 @@ void SystemClock_Config(void)
     RCC_OscInitStruct.HSIState = RCC_HSI_ON;
     RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
     RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+#if HSE_VALUE == 12000000
+    RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL6;
+#else
     RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
+#endif
     if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
         Error_Handler();
 

@@ -33,12 +33,19 @@ _estack = ORIGIN(RAM) + LENGTH(RAM);    /* end of "RAM" Ram type memory */
 _Min_Heap_Size = 0x2000; /* required amount of heap  */
 _Min_Stack_Size = 0x400;    /* required amount of stack */
 
+/* Dummy symbol we can override using -Wl,--defsym on the command line */
+LD_VECT_TAB_OFFSET = DEFINED(LD_VECT_TAB_OFFSET)? LD_VECT_TAB_OFFSET : 0;
+
 /* Memories definition */
 MEMORY
 {
-  RAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 48K
-  FLASH    (rx)    : ORIGIN = 0x8000000,   LENGTH = 256K
+  RAM(xrw)         : ORIGIN = 0x20000000,                   LENGTH = 48K
+  EEPROM_EMUL(xrw) : ORIGIN = 0x802F000,                    LENGTH = 4K
+  FLASH(rx)        : ORIGIN = 0x8000000+LD_VECT_TAB_OFFSET, LENGTH = 256K-2K-LD_VECT_TAB_OFFSET
 }
+
+_EEPROM_Emul_Start = ORIGIN(EEPROM_EMUL);
+_EEPROM_Emul_Sector = 2;
 
 /* Sections */
 SECTIONS

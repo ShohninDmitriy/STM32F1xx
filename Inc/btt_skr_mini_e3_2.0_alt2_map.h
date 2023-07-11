@@ -1,5 +1,5 @@
 /*
-  btt_skr_mini_e3_2.0_map.h - driver code for STM32F103RC ARM processors
+  btt_skr_mini_e3_2.0_alt2_map.h - driver code for STM32F103RC ARM processors
 
   Part of grblHAL
 
@@ -28,10 +28,11 @@
 #endif
 
 #if N_AXIS == 4
-#define BOARD_NAME "BTT SKR MINI E3 V2.0 4-axis"
+#define BOARD_NAME "BTT SKR MINI E3 V2.0 4-axis (alt2)"
 #else
-#define BOARD_NAME "BTT SKR MINI E3 V2.0"
+#define BOARD_NAME "BTT SKR MINI E3 V2.0 (alt2)"
 #endif
+#define BOARD_URL "https://github.com/bigtreetech/BIGTREETECH-SKR-mini-E3"
 
 #define I2C_PORT 1
 #define SERIAL2_MOD
@@ -99,24 +100,24 @@
 
   // Define spindle enable and spindle direction output pins.
 #define SPINDLE_ENABLE_PORT     GPIOC
-#define SPINDLE_ENABLE_PIN      7 //PC7
+#define SPINDLE_ENABLE_PIN      7 //PC7-FAN1
 #define SPINDLE_DIRECTION_PORT  GPIOC
-#define SPINDLE_DIRECTION_PIN   6 //PC6
+#define SPINDLE_DIRECTION_PIN   8 //PC8
 
 // Define spindle PWM output pin.
 #define SPINDLE_PWM_PORT_BASE   GPIOA_BASE
-#define SPINDLE_PWM_PIN         8 //PA8
+#define SPINDLE_PWM_PIN         1 //PA1 or PA8
 
 // Define flood and mist coolant enable output pins.
 #define COOLANT_FLOOD_PORT      GPIOC
-#define COOLANT_FLOOD_PIN       8 //PC8
+#define COOLANT_FLOOD_PIN       6 //PC6-FAN0
 #define COOLANT_MIST_PORT       GPIOC
 #define COOLANT_MIST_PIN        9 //PC9
 
 // Define user-control controls (cycle start, reset, feed hold) input pins.
 #define CONTROL_PORT            GPIOC
-#define RESET_PIN               15 //PC15
-#define FEED_HOLD_PIN           13 //PC13
+#define RESET_PIN               13 //PC13
+#define FEED_HOLD_PIN           15 //PC15
 #define CYCLE_START_PIN         12 //PC12
 #if SAFETY_DOOR_ENABLE
 #define SAFETY_DOOR_PIN         3 //PC3

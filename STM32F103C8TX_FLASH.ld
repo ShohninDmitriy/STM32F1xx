@@ -55,15 +55,19 @@ ENTRY(Reset_Handler)
 /* Highest address of the user mode stack */
 _estack = 0x20005000;	/* end of "RAM" Ram type memory */
 
-_Min_Heap_Size = 0x800 ;	/* required amount of heap  */
+_Min_Heap_Size = 0x1000 ;	/* required amount of heap  */
 _Min_Stack_Size = 0x800 ;	/* required amount of stack */
 
 /* Memories definition */
 MEMORY
 {
-    FLASH	(rx)	: ORIGIN = 0x8000000,	LENGTH = 128K
-    RAM	(rwx)	: ORIGIN = 0x20000000,	LENGTH = 20K
+  RAM(rwx)         : ORIGIN = 0x20000000, LENGTH = 20K
+  EEPROM_EMUL(xrw) : ORIGIN = 0x801F800,  LENGTH = 2K
+  FLASH(rx)	       : ORIGIN = 0x8000000,  LENGTH = 128K - 2K
 }
+
+_EEPROM_Emul_Start = ORIGIN(EEPROM_EMUL);
+_EEPROM_Emul_Sector = 2;
 
 /* Sections */
 SECTIONS
