@@ -4,7 +4,7 @@
 
   Part of grblHAL
 
-  Copyright (c) 2019-2023 Terje Io
+  Copyright (c) 2019-2024 Terje Io
 
   Grbl is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -98,6 +98,10 @@
 #define GPIO_MAP     14
 #define GPIO_BITBAND 15
 
+#ifndef STM32F103xB
+#define HAS_IOPORTS
+#endif
+
 #ifdef BOARD_CNC_BOOSTERPACK
   #include "cnc_boosterpack_map.h"
 #elif defined(BOARD_CNC3040)
@@ -120,19 +124,21 @@
   #include "generic_map.h"
 #endif
 
-// Define timer allocations.
-#define STEPPER_TIMER TIM2
-#define PULSE_TIMER TIM3
-#define DEBOUNCE_TIMER TIM4
-
 #ifdef SPINDLE_PWM_PORT_BASE
 
 #if SPINDLE_PWM_PORT_BASE == GPIOA_BASE
-  #if SPINDLE_PWM_PIN == 1 // PA1 - TIM5_CH2
+  #if SPINDLE_PWM_PIN == 1
+   #ifdef STM32F103xE // PA1 - TIM5_CH2
     #define SPINDLE_PWM_TIMER_N     5
     #define SPINDLE_PWM_TIMER_CH    2
     #define SPINDLE_PWM_TIMER_INV   0
     #define SPINDLE_PWM_AF_REMAP    0
+   #else // PA1 - TIM2_CH2
+    #define SPINDLE_PWM_TIMER_N 2
+    #define SPINDLE_PWM_TIMER_CH 2
+    #define SPINDLE_PWM_TIMER_INV 0
+    #define SPINDLE_PWM_AF_REMAP 0
+   #endif
   #elif SPINDLE_PWM_PIN == 8 // PA8 - TIM1_CH1
     #define SPINDLE_PWM_TIMER_N     1
     #define SPINDLE_PWM_TIMER_CH    1
@@ -143,11 +149,6 @@
     #define SPINDLE_PWM_TIMER_CH    3
     #define SPINDLE_PWM_TIMER_INV   0
     #define SPINDLE_PWM_AF_REMAP    0
-  #elif SPINDLE_PWM_PIN == 1 // PA1 - TIM2_CH2
-    #define SPINDLE_PWM_TIMER_N 2
-    #define SPINDLE_PWM_TIMER_CH 2
-    #define SPINDLE_PWM_TIMER_INV 0
-    #define SPINDLE_PWM_AF_REMAP 0
   #endif
 #elif SPINDLE_PWM_PORT_BASE == GPIOB_BASE
   #if SPINDLE_PWM_PIN == 0 // PB0 - TIM1_CH2N
@@ -156,7 +157,7 @@
     #define SPINDLE_PWM_TIMER_INV   1
     #define SPINDLE_PWM_AF_REMAP    0b01
   #elif SPINDLE_PWM_PIN == 9 // PB9 - TIM4_CH4
-    #define SPINDLE_PWM_TIMER_N     1
+    #define SPINDLE_PWM_TIMER_N     4
     #define SPINDLE_PWM_TIMER_CH    4
     #define SPINDLE_PWM_TIMER_INV   0
     #define SPINDLE_PWM_AF_REMAP    0
@@ -191,6 +192,32 @@
 #define SPINDLE_PWM_CLOCK_ENA       timerCLKENA(SPINDLE_PWM_TIMER_N)
 
 #endif // SPINDLE_PWM_PORT_BASE
+
+#if SPINDLE_PWM_TIMER_CH == 4
+#define DEBOUNCE_TIMER_N 1
+#else
+#define DEBOUNCE_TIMER_N 4
+#endif
+#define DEBOUNCE_TIMER              timer(DEBOUNCE_TIMER_N)
+#define DEBOUNCE_TIMER_CLKEN        timerCLKENA(DEBOUNCE_TIMER_N)
+#define DEBOUNCE_TIMER_IRQn         timerINT(DEBOUNCE_TIMER_N)
+#define DEBOUNCE_TIMER_IRQHandler   timerHANDLER(DEBOUNCE_TIMER_N)
+
+#if SPINDLE_PWM_TIMER_CH == 2
+#define STEPPER_TIMER_N 1
+#else
+#define STEPPER_TIMER_N 2
+#endif
+#define STEPPER_TIMER               timer(STEPPER_TIMER_N)
+#define STEPPER_TIMER_CLKEN         timerCLKENA(STEPPER_TIMER_N)
+#define STEPPER_TIMER_IRQn          timerINT(STEPPER_TIMER_N)
+#define STEPPER_TIMER_IRQHandler    timerHANDLER(STEPPER_TIMER_N)
+
+#define PULSE_TIMER_N               3
+#define PULSE_TIMER                 timer(PULSE_TIMER_N)
+#define PULSE_TIMER_CLKEN           timerCLKENA(PULSE_TIMER_N)
+#define PULSE_TIMER_IRQn            timerINT(PULSE_TIMER_N)
+#define PULSE_TIMER_IRQHandler      timerHANDLER(PULSE_TIMER_N)
 
 // Adjust STEP_PULSE_LATENCY to get accurate step pulse length when required, e.g if using high step rates.
 // The default value is calibrated for 10 microseconds length.
@@ -258,9 +285,10 @@ typedef struct {
     pin_group_t group;
     volatile bool active;
     volatile bool debounce;
-    pin_irq_mode_t irq_mode;
-    pin_mode_t cap;
+    pin_cap_t cap;
+    pin_mode_t mode;
     ioport_interrupt_callback_ptr interrupt_callback;
+    aux_ctrl_t *aux_ctrl;
     const char *description;
 } input_signal_t;
 
