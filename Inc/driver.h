@@ -4,20 +4,20 @@
 
   Part of grblHAL
 
-  Copyright (c) 2019-2023 Terje Io
+  Copyright (c) 2019-2024 Terje Io
 
-  Grbl is free software: you can redistribute it and/or modify
+  grblHAL is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
 
-  Grbl is distributed in the hope that it will be useful,
+  grblHAL is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
+  along with grblHAL. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
@@ -98,6 +98,10 @@
 #define GPIO_MAP     14
 #define GPIO_BITBAND 15
 
+#ifndef STM32F103xB
+#define HAS_IOPORTS
+#endif
+
 #ifdef BOARD_CNC_BOOSTERPACK
   #include "cnc_boosterpack_map.h"
 #elif defined(BOARD_CNC3040)
@@ -118,19 +122,21 @@
   #include "generic_map.h"
 #endif
 
-// Define timer allocations.
-#define STEPPER_TIMER TIM2
-#define PULSE_TIMER TIM3
-#define DEBOUNCE_TIMER TIM4
-
 #ifdef SPINDLE_PWM_PORT_BASE
 
 #if SPINDLE_PWM_PORT_BASE == GPIOA_BASE
-  #if SPINDLE_PWM_PIN == 1 // PA1 - TIM5_CH2
+  #if SPINDLE_PWM_PIN == 1
+   #ifdef STM32F103xE // PA1 - TIM5_CH2
     #define SPINDLE_PWM_TIMER_N     5
     #define SPINDLE_PWM_TIMER_CH    2
     #define SPINDLE_PWM_TIMER_INV   0
     #define SPINDLE_PWM_AF_REMAP    0
+   #else // PA1 - TIM2_CH2
+    #define SPINDLE_PWM_TIMER_N 2
+    #define SPINDLE_PWM_TIMER_CH 2
+    #define SPINDLE_PWM_TIMER_INV 0
+    #define SPINDLE_PWM_AF_REMAP 0
+   #endif
   #elif SPINDLE_PWM_PIN == 8 // PA8 - TIM1_CH1
     #define SPINDLE_PWM_TIMER_N     1
     #define SPINDLE_PWM_TIMER_CH    1
@@ -141,11 +147,6 @@
     #define SPINDLE_PWM_TIMER_CH    3
     #define SPINDLE_PWM_TIMER_INV   0
     #define SPINDLE_PWM_AF_REMAP    0
-  #elif SPINDLE_PWM_PIN == 1 // PA1 - TIM2_CH2
-    #define SPINDLE_PWM_TIMER_N 2
-    #define SPINDLE_PWM_TIMER_CH 2
-    #define SPINDLE_PWM_TIMER_INV 0
-    #define SPINDLE_PWM_AF_REMAP 0
   #endif
 #elif SPINDLE_PWM_PORT_BASE == GPIOB_BASE
   #if SPINDLE_PWM_PIN == 0 // PB0 - TIM1_CH2N
@@ -154,7 +155,7 @@
     #define SPINDLE_PWM_TIMER_INV   1
     #define SPINDLE_PWM_AF_REMAP    0b01
   #elif SPINDLE_PWM_PIN == 9 // PB9 - TIM4_CH4
-    #define SPINDLE_PWM_TIMER_N     1
+    #define SPINDLE_PWM_TIMER_N     4
     #define SPINDLE_PWM_TIMER_CH    4
     #define SPINDLE_PWM_TIMER_INV   0
     #define SPINDLE_PWM_AF_REMAP    0
@@ -189,6 +190,27 @@
 #define SPINDLE_PWM_CLOCK_ENA       timerCLKENA(SPINDLE_PWM_TIMER_N)
 
 #endif // SPINDLE_PWM_PORT_BASE
+
+#if SPINDLE_PWM_TIMER_CH == 2
+#define STEPPER_TIMER_N 1
+#else
+#define STEPPER_TIMER_N 2
+#endif
+#define STEPPER_TIMER               timer(STEPPER_TIMER_N)
+#define STEPPER_TIMER_CLKEN         timerCLKENA(STEPPER_TIMER_N)
+#if STEPPER_TIMER_N == 1
+#define STEPPER_TIMER_IRQn          TIM1_UP_IRQn
+#define STEPPER_TIMER_IRQHandler    TIM1_UP_IRQHandler
+#else
+#define STEPPER_TIMER_IRQn          timerINT(STEPPER_TIMER_N)
+#define STEPPER_TIMER_IRQHandler    timerHANDLER(STEPPER_TIMER_N)
+#endif
+
+#define PULSE_TIMER_N               3
+#define PULSE_TIMER                 timer(PULSE_TIMER_N)
+#define PULSE_TIMER_CLKEN           timerCLKENA(PULSE_TIMER_N)
+#define PULSE_TIMER_IRQn            timerINT(PULSE_TIMER_N)
+#define PULSE_TIMER_IRQHandler      timerHANDLER(PULSE_TIMER_N)
 
 // Adjust STEP_PULSE_LATENCY to get accurate step pulse length when required, e.g if using high step rates.
 // The default value is calibrated for 10 microseconds length.
@@ -250,24 +272,24 @@
 
 typedef struct {
     pin_function_t id;
-    GPIO_TypeDef *port;
+    pin_cap_t cap;
+    pin_mode_t mode;
     uint8_t pin;
     uint32_t bit;
+    GPIO_TypeDef *port;
     pin_group_t group;
+    uint8_t user_port;
     volatile bool active;
-    volatile bool debounce;
-    pin_irq_mode_t irq_mode;
-    pin_mode_t cap;
     ioport_interrupt_callback_ptr interrupt_callback;
     const char *description;
 } input_signal_t;
 
 typedef struct {
     pin_function_t id;
-    GPIO_TypeDef *port;
-    uint8_t pin;
-    pin_group_t group;
     pin_mode_t mode;
+    uint8_t pin;
+    GPIO_TypeDef *port;
+    pin_group_t group;
     const char *description;
 } output_signal_t;
 
@@ -287,7 +309,7 @@ bool driver_init (void);
 void gpio_irq_enable (const input_signal_t *input, pin_irq_mode_t irq_mode);
 #ifdef HAS_IOPORTS
 void ioports_init (pin_group_pins_t *aux_inputs, pin_group_pins_t *aux_outputs);
-void ioports_event (uint32_t bit);
+void ioports_event (input_signal_t *input);
 #endif
 
 #endif // __DRIVER_H__
