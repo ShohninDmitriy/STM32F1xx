@@ -3,20 +3,20 @@
 
   Part of grblHAL
 
-  Copyright (c) 2023-2024 @r3l4x-pt
+  Copyright (c) 2023 @r3l4x-pt
 
-  grblHAL is free software: you can redistribute it and/or modify
+  Grbl is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
 
-  grblHAL is distributed in the hope that it will be useful,
+  Grbl is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with grblHAL. If not, see <http://www.gnu.org/licenses/>.
+  along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 /*
@@ -107,31 +107,15 @@ Programming port, top view (not mounted)
 #define M3_LIMIT_PIN            15 // IN4
 #endif
 
-// Define spindle PWM output pin.
-#if DRIVER_SPINDLE_PWM_ENABLE
-#define SPINDLE_PWM_PORT_BASE   GPIOA_BASE
-#define SPINDLE_PWM_PIN         8 // AVI + ACM
-#else
-#define AUXOUTPUT1_PORT         GPIOA
-#define AUXOUTPUT1_PIN          8
-#endif
-
-// Define spindle enable and spindle direction output pins.
-#if DRIVER_SPINDLE_DIR_ENABLE
-#define SPINDLE_DIRECTION_PORT  GPIOC
-#define SPINDLE_DIRECTION_PIN   7 // OUT2
-#else
-#define AUXOUTPUT2_PORT         GPIOC
-#define AUXOUTPUT2_PIN          7
-#endif
-
-#if DRIVER_SPINDLE_ENABLE
+  // Define spindle enable and spindle direction output pins.
 #define SPINDLE_ENABLE_PORT     GPIOC
 #define SPINDLE_ENABLE_PIN      6 // OUT1
-#else
-#define AUXOUTPUT3_PORT         GPIOC
-#define AUXOUTPUT3_PIN          6
-#endif
+#define SPINDLE_DIRECTION_PORT  GPIOC
+#define SPINDLE_DIRECTION_PIN   7 // OUT2
+
+// Define spindle PWM output pin.
+#define SPINDLE_PWM_PORT_BASE   GPIOA_BASE
+#define SPINDLE_PWM_PIN         8 // AVI + ACM
 
 // Define flood and mist coolant enable output pins.
 #define COOLANT_FLOOD_PORT      GPIOC
@@ -144,31 +128,22 @@ Programming port, top view (not mounted)
 #define RESET_PIN               9 // 10pin IDC, 4
 #define FEED_HOLD_PIN           8 // 10pin IDC, 3
 #define CYCLE_START_PIN         7 // 10pin IDC, 6
+#ifdef ENABLE_SAFETY_DOOR_INPUT_PIN
+#define SAFETY_DOOR_PIN         6 // 10pin IDC, 5
+#endif
 #define CONTROL_INMODE          GPIO_BITBAND
 
-#define AUXINPUT0_PORT          GPIOB
-#define AUXINPUT0_PIN           6 // 10pin IDC, 5
-#define AUXINPUT1_PORT          GPIOB
-#define AUXINPUT1_PIN           3 // 10pin IDC, 8
-#define AUXINPUT2_PORT          GPIOB
-#define AUXINPUT2_PIN           4 // 10pin IDC, 7
-
-#if PROBE_ENABLE
-#define PROBE_PORT              AUXINPUT2_PORT
-#define PROBE_PIN               AUXINPUT2_PIN
-#endif
+// Define probe switch input pin.
+#define PROBE_PORT              GPIOB
+#define PROBE_PIN               4 // 10pin IDC, 7
 
 #if MPG_MODE == 1
-#define MPG_MODE_PORT           AUXINPUT1_PORT
-#define MPG_MODE_PIN            AUXINPUT1_PIN
-#endif
-
-#if SAFETY_DOOR_ENABLE
-#define SAFETY_DOOR_PORT        AUXINPUT0_PORT
-#define SAFETY_DOOR_PIN         AUXINPUT0_PIN
-#elif MOTOR_FAULT_ENABLE
-#define MOTOR_FAULT_PORT        AUXINPUT0_PORT
-#define MOTOR_FAULT_PIN         AUXINPUT0_PIN
+#define MPG_MODE_PORT           GPIOB
+#define MPG_MODE_PIN            3 // 10pin IDC, 8
+#else
+#define HAS_IOPORTS
+#define AUXOUTPUT0_PORT         GPIOB
+#define AUXOUTPUT0_PIN          3 // 10pin IDC, 8
 #endif
 
 /**/
