@@ -99,23 +99,25 @@
 #define GPIO_BITBAND 15
 
 #ifdef BOARD_CNC_BOOSTERPACK
-  #include "cnc_boosterpack_map.h"
+  #include "boards/cnc_boosterpack_map.h"
 #elif defined(BOARD_CNC3040)
-  #include "cnc3040_map.h"
+  #include "boards/cnc3040_map.h"
 #elif defined(BOARD_BTT_SKR_MINI_E3_V20)
-  #include "btt_skr_mini_e3_2.0_map.h"
+  #include "boards/btt_skr_mini_e3_2.0_map.h"
 #elif defined(BOARD_BTT_SKR_MINI_E3_V20_ALT2)
-  #include "btt_skr_mini_e3_2.0_alt2_map.h"
+  #include "boards/btt_skr_mini_e3_2.0_alt2_map.h"
 #elif defined(BOARD_MACH3_BOB)
-  #include "mach3_bob_map.h"
-#elif defined(BOARD_MY_MACHINE)
-  #include "my_machine_map.h"
+  #include "boards/mach3_bob_map.h"
 #elif defined(BOARD_SVM)
-  #include "svm_map.h"
+  #include "boards/svm_map.h"
 #elif defined(BOARD_SUPERGERBIL)
-  #include "supergerbil_map.h"
+  #include "boards/supergerbil_map.h"
+#elif defined(BOARD_CREALITY_V2_2_2) || defined(BOARD_CREALITY_V2_2_7)
+  #include "boards/creality_v2.2.x_map.h"
+#elif defined(BOARD_MY_MACHINE)
+  #include "boards/my_machine_map.h"
 #else // default board
-  #include "generic_map.h"
+  #include "boards/generic_map.h"
 #endif
 
 // Define timer allocations.
@@ -185,7 +187,9 @@
 #define SPINDLE_PWM_CR2_OIS         timerCR2OIS(SPINDLE_PWM_TIMER_CH, )
 #endif
 
+#ifndef SPINDLE_PWM_PORT
 #define SPINDLE_PWM_PORT            ((GPIO_TypeDef *)SPINDLE_PWM_PORT_BASE)
+#endif
 #define SPINDLE_PWM_CLOCK_ENA       timerCLKENA(SPINDLE_PWM_TIMER_N)
 
 #endif // SPINDLE_PWM_PORT_BASE
@@ -231,8 +235,8 @@
 #error Trinamic plugin not supported!
 #endif
 
-#if (!USB_SERIAL_CDC || MPG_ENABLE) && !defined(SERIAL_MOD)
-#define SERIAL_MOD 1
+#if (!USB_SERIAL_CDC || MPG_ENABLE) && !defined(SERIAL_PORT)
+#define SERIAL_PORT 1
 #endif
 
 #ifndef RESET_PORT

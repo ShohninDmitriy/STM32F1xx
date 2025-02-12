@@ -8,12 +8,14 @@ src_dir = Src
 [common]
 build_flags =
   -I .
+  -I boards
   -I FatFS
   -I Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc
   -I Middlewares/ST/STM32_USB_Device_Library/Core/Inc
   -I USB_DEVICE/Target
   -D OVERRIDE_MY_MACHINE
 lib_deps =
+  boards
   bluetooth
   grbl
   keypad
@@ -46,4 +48,5 @@ build_flags = ${common.build_flags}
 %build_flags%
 lib_deps = ${common.lib_deps}
   eeprom
+%lib_deps%
 lib_extra_dirs = ${common.lib_extra_dirs}

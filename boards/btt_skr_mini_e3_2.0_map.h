@@ -1,5 +1,5 @@
 /*
-  btt_skr_mini_e3_2.0_alt2_map.h - driver code for STM32F103RC ARM processors
+  btt_skr_mini_e3_2.0_map.h - driver code for STM32F103RC ARM processors
 
   Part of grblHAL
 
@@ -28,15 +28,15 @@
 #endif
 
 #if N_AXIS == 4
-#define BOARD_NAME "BTT SKR MINI E3 V2.0 4-axis (alt2)"
+#define BOARD_NAME "BTT SKR MINI E3 V2.0 4-axis"
 #else
-#define BOARD_NAME "BTT SKR MINI E3 V2.0 (alt2)"
+#define BOARD_NAME "BTT SKR MINI E3 V2.0"
 #endif
 #define BOARD_URL "https://github.com/bigtreetech/BIGTREETECH-SKR-mini-E3"
 
 #define I2C_PORT        1
 #define SERIAL_PORT     1 // GPIOA: TX = 9, RX = 10
-#define SERIAL1_PORT   31 // GPIOC: TX = 10, RX = 11
+#define SERIAL1_PORT   31 // GPIOC: TX = 10, RX = 11 - to Trinamic drivers
 #define HAS_BOARD_INIT
 
 #ifdef TRINAMIC_ENABLE
@@ -100,42 +100,46 @@
 #endif
 #endif
 
-// Define driver spindle pins
-
-#if DRIVER_SPINDLE_PWM_ENABLE // PA1 or PA8
-#define SPINDLE_PWM_PORT_BASE   GPIOA_BASE
-#define SPINDLE_PWM_PIN         1
-#else
-#define AUXOUTPUT0_PORT         GPIOA
+#define AUXOUTPUT0_PORT         GPIOA // Spindle PWM (PA1 or PA8)
 #define AUXOUTPUT0_PIN          1
-#endif
-
-#if DRIVER_SPINDLE_DIR_ENABLE
-#define SPINDLE_DIRECTION_PORT  GPIOC
-#define SPINDLE_DIRECTION_PIN   8
-#else
-#define AUXOUTPUT1_PORT         GPIOC
-#define AUXOUTPUT1_PIN          8
-#endif
-
-#if DRIVER_SPINDLE_ENABLE // FAN1
-#define SPINDLE_ENABLE_PORT     GPIOC
-#define SPINDLE_ENABLE_PIN      7
-#else
-#define AUXOUTPUT2_PORT         GPIOC
+#define AUXOUTPUT1_PORT         GPIOC // Spindle direction
+#define AUXOUTPUT1_PIN          6
+#define AUXOUTPUT2_PORT         GPIOC // Spindle enable
 #define AUXOUTPUT2_PIN          7
+#define AUXOUTPUT3_PORT         GPIOC // Coolant flood
+#define AUXOUTPUT3_PIN          8
+#define AUXOUTPUT4_PORT         GPIOC // Coolant mist
+#define AUXOUTPUT4_PIN          9
+
+// Define driver spindle pins
+#if DRIVER_SPINDLE_ENABLE & SPINDLE_ENA
+#define SPINDLE_ENABLE_PORT     AUXOUTPUT2_PORT
+#define SPINDLE_ENABLE_PIN      AUXOUTPUT2_PIN
+#endif
+#if DRIVER_SPINDLE_ENABLE & SPINDLE_PWM
+#define SPINDLE_PWM_PORT_BASE   GPIOA_BASE
+#define SPINDLE_PWM_PORT        AUXOUTPUT0_PORT
+#define SPINDLE_PWM_PIN         AUXOUTPUT0_PIN
+#endif
+#if DRIVER_SPINDLE_ENABLE & SPINDLE_DIR
+#define SPINDLE_DIRECTION_PORT  AUXOUTPUT1_PORT
+#define SPINDLE_DIRECTION_PIN   AUXOUTPUT1_PIN
 #endif
 
 // Define flood and mist coolant enable output pins.
-#define COOLANT_FLOOD_PORT      GPIOC
-#define COOLANT_FLOOD_PIN       6 //PC6-FAN0
-#define COOLANT_MIST_PORT       GPIOC
-#define COOLANT_MIST_PIN        9 //PC9
+#if COOLANT_ENABLE & COOLANT_FLOOD
+#define COOLANT_FLOOD_PORT      AUXOUTPUT3_PORT
+#define COOLANT_FLOOD_PIN       AUXOUTPUT3_PIN
+#endif
+#if COOLANT_ENABLE & COOLANT_MIST
+#define COOLANT_MIST_PORT       AUXOUTPUT4_PORT
+#define COOLANT_MIST_PIN        AUXOUTPUT4_PIN
+#endif
 
 // Define user-control controls (cycle start, reset, feed hold) input pins.
 #define CONTROL_PORT            GPIOC
-#define RESET_PIN               13 //PC13
-#define FEED_HOLD_PIN           15 //PC15
+#define RESET_PIN               15 //PC15
+#define FEED_HOLD_PIN           13 //PC13
 #define CYCLE_START_PIN         12 //PC12
 #if SAFETY_DOOR_ENABLE
 #define SAFETY_DOOR_PIN         3 //PC3

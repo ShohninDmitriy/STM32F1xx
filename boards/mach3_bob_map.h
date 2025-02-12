@@ -33,10 +33,10 @@ LED PC2
  2 gnd
  3 PB8  - feed hold
  4 PB9  - reset or e-stop
- 5 PB6  - start safety door
- 6 PB7  - cycle
+ 5 PB6  - safety door or aux in 0
+ 6 PB7  - cycle start
  7 PB4  - probe
- 8 PB3  - MPG mode or Aux out 0
+ 8 PB3  - MPG mode or aux in 1
  9 PD2  - UART5 Rx - remove pull up/pull down resistors!
 10 PC12 - UART5 Tx - remove pull up/pull down resistors!
 
@@ -107,21 +107,41 @@ Programming port, top view (not mounted)
 #define M3_LIMIT_PIN            15 // IN4
 #endif
 
-  // Define spindle enable and spindle direction output pins.
-#define SPINDLE_ENABLE_PORT     GPIOC
-#define SPINDLE_ENABLE_PIN      6 // OUT1
-#define SPINDLE_DIRECTION_PORT  GPIOC
-#define SPINDLE_DIRECTION_PIN   7 // OUT2
+#define AUXOUTPUT0_PORT         GPIOA // Spindle PWM,  AVI + ACM
+#define AUXOUTPUT0_PIN          8
+#define AUXOUTPUT1_PORT         GPIOC // Spindle direction, OUT2
+#define AUXOUTPUT1_PIN          7
+#define AUXOUTPUT2_PORT         GPIOC // Spindle enable, OUT1
+#define AUXOUTPUT2_PIN          6
+#define AUXOUTPUT3_PORT         GPIOC // Coolant flood, OUT3
+#define AUXOUTPUT3_PIN          8
+#define AUXOUTPUT4_PORT         GPIOC // Coolant mist, OUT4
+#define AUXOUTPUT4_PIN          9
 
-// Define spindle PWM output pin.
+// Define driver spindle pins
+#if DRIVER_SPINDLE_ENABLE & SPINDLE_ENA
+#define SPINDLE_ENABLE_PORT     AUXOUTPUT2_PORT
+#define SPINDLE_ENABLE_PIN      AUXOUTPUT2_PIN
+#endif
+#if DRIVER_SPINDLE_ENABLE & SPINDLE_PWM
 #define SPINDLE_PWM_PORT_BASE   GPIOA_BASE
-#define SPINDLE_PWM_PIN         8 // AVI + ACM
+#define SPINDLE_PWM_PORT        AUXOUTPUT0_PORT
+#define SPINDLE_PWM_PIN         AUXOUTPUT0_PIN
+#endif
+#if DRIVER_SPINDLE_ENABLE & SPINDLE_DIR
+#define SPINDLE_DIRECTION_PORT  AUXOUTPUT1_PORT
+#define SPINDLE_DIRECTION_PIN   AUXOUTPUT1_PIN
+#endif
 
 // Define flood and mist coolant enable output pins.
-#define COOLANT_FLOOD_PORT      GPIOC
-#define COOLANT_FLOOD_PIN       8 // OUT3
-#define COOLANT_MIST_PORT       GPIOC
-#define COOLANT_MIST_PIN        9 // OUT4
+#if COOLANT_ENABLE & COOLANT_FLOOD
+#define COOLANT_FLOOD_PORT      AUXOUTPUT3_PORT
+#define COOLANT_FLOOD_PIN       AUXOUTPUT3_PIN
+#endif
+#if COOLANT_ENABLE & COOLANT_MIST
+#define COOLANT_MIST_PORT       AUXOUTPUT4_PORT
+#define COOLANT_MIST_PIN        AUXOUTPUT4_PIN
+#endif
 
 // Define user-control controls (cycle start, reset, feed hold) input pins.
 #define CONTROL_PORT            GPIOB
@@ -137,13 +157,17 @@ Programming port, top view (not mounted)
 #define PROBE_PORT              GPIOB
 #define PROBE_PIN               4 // 10pin IDC, 7
 
-#if MPG_MODE == 1
-#define MPG_MODE_PORT           GPIOB
-#define MPG_MODE_PIN            3 // 10pin IDC, 8
-#else
-#define HAS_IOPORTS
-#define AUXOUTPUT0_PORT         GPIOB
-#define AUXOUTPUT0_PIN          3 // 10pin IDC, 8
+#if MPG_ENABLE == 1
+#define MPG_MODE_PORT           AUXINPUT1_PORT
+#define MPG_MODE_PIN            AUXINPUT1_PIN
+#endif
+
+#if SAFETY_DOOR_ENABLE
+#define SAFETY_DOOR_PORT        AUXINPUT0_PORT
+#define SAFETY_DOOR_PIN         AUXINPUT0_PIN
+#elif MOTOR_FAULT_ENABLE
+#define MOTOR_FAULT_PORT        AUXINPUT0_PORT
+#define MOTOR_FAULT_PIN         AUXINPUT0_PIN
 #endif
 
 /**/

@@ -55,11 +55,66 @@ static const io_stream_t *serial1Init(uint32_t baud_rate);
 #if SERIAL_PORT
 
 #if SERIAL_PORT == 1
-#define USART USART1
-#define USART_IRQ USART1_IRQn
-#define USART_IRQHandler USART1_IRQHandler
-#define USART_CLK HAL_RCC_GetPCLK2Freq
-#define USART_CLK_ENABLE __HAL_RCC_USART1_CLK_ENABLE
+#define UART0_TX_PIN 9
+#define UART0_TX_PORT GPIOA
+#define UART0_RX_PIN 10
+#define UART0_RX_PORT GPIOA
+#define UART0 usartN(1)
+#define UART0_IRQ usartint(1)
+#define UART0_IRQHandler usarthandler(1)
+#define UART0_CLK_ENABLE usartclken(1)
+#define UART0_CLK HAL_RCC_GetPCLK2Freq
+#elif SERIAL_PORT == 2
+#define UART0_TX_PIN 2
+#define UART0_TX_PORT GPIOA
+#define UART0_RX_PIN 3
+#define UART0_RX_PORT GPIOA
+#define UART0 usartN(2)
+#define UART0_IRQ usartint(2)
+#define UART0_IRQHandler usarthandler(2)
+#define UART0_CLK_ENABLE usartclken(2)
+#define UART0_CLK HAL_RCC_GetPCLK1Freq
+#elif SERIAL_PORT == 3
+#define UART0_TX_PIN 10
+#define UART0_TX_PORT GPIOB
+#define UART0_RX_PIN 11
+#define UART0_RX_PORT GPIOB
+#define UART0 usartN(3)
+#define UART0_IRQ usartint(3)
+#define UART0_IRQHandler usarthandler(3)
+#define UART0_CLK_ENABLE usartclken(3)
+#define UART0_CLK HAL_RCC_GetPCLK1Freq
+#elif SERIAL1_PORT == 31
+#define UART0_TX_PIN 10
+#define UART0_TX_PORT GPIOC
+#define UART0_RX_PIN 11
+#define UART0_RX_PORT GPIOC
+#define UART0_AF __HAL_AFIO_REMAP_USART3_PARTIAL
+#define UART0 usartN(3)
+#define UART0_IRQ usartint(3)
+#define UART0_IRQHandler usarthandler(3)
+#define UART0_CLK_ENABLE usartclken(3)
+#define UART0_CLK HAL_RCC_GetPCLK1Freq
+#elif SERIAL_PORT == 4
+#define UART0_TX_PIN 10
+#define UART0_TX_PORT GPIOC
+#define UART0_RX_PIN 11
+#define UART0_RX_PORT GPIOC
+#define UART0 UART4
+#define UART0_IRQ UART4_IRQn
+#define UART0_IRQHandler UART4_IRQHandler
+#define UART0_CLK_ENABLE __HAL_RCC_UART4_CLK_ENABLE
+#define UART0_CLK HAL_RCC_GetPCLK1Freq
+#elif SERIAL_PORT == 5
+#define UART0_TX_PIN 12
+#define UART0_TX_PORT GPIOC
+#define UART0_RX_PIN 2
+#define UART0_RX_PORT GPIOD
+#define UART0 UART5
+#define UART0_IRQ UART5_IRQn
+#define UART0_IRQHandler UART5_IRQHandler
+#define UART0_CLK_ENABLE __HAL_RCC_UART5_CLK_ENABLE
+#define UART0_CLK HAL_RCC_GetPCLK1Freq
 #else
 #define USART UART5
 #define USART_IRQ UART5_IRQn
@@ -78,31 +133,92 @@ static const io_stream_t *serial1Init(uint32_t baud_rate);
 #define UART2_CLK HAL_RCC_GetPCLK1Freq
 #define UART2_CLK_ENABLE __HAL_RCC_USART3_CLK_ENABLE
 
+#if SERIAL1_PORT == 1
+#define UART1_TX_PIN 9
+#define UART1_TX_PORT GPIOA
+#define UART1_RX_PIN 10
+#define UART1_RX_PORT GPIOA
+#define UART1 usartN(1)
+#define UART1_IRQ usartint(1)
+#define UART1_IRQHandler usarthandler(1)
+#define UART1_CLK_ENABLE usartclken(1)
+#define UART1_CLK HAL_RCC_GetPCLK2Freq
+#elif SERIAL1_PORT == 2
+#define UART1_TX_PIN 2
+#define UART1_TX_PORT GPIOA
+#define UART1_RX_PIN 3
+#define UART1_RX_PORT GPIOA
+#define UART1 usartN(2)
+#define UART1_IRQ usartint(2)
+#define UART1_IRQHandler usarthandler(2)
+#define UART1_CLK_ENABLE usartclken(2)
+#define UART1_CLK HAL_RCC_GetPCLK1Freq
+#elif SERIAL1_PORT == 3
+#define UART1_TX_PIN 10
+#define UART1_TX_PORT GPIOB
+#define UART1_RX_PIN 11
+#define UART1_RX_PORT GPIOB
+#define UART1 usartN(3)
+#define UART1_IRQ usartint(3)
+#define UART1_IRQHandler usarthandler(3)
+#define UART1_CLK_ENABLE usartclken(3)
+#define UART1_CLK HAL_RCC_GetPCLK1Freq
+#elif SERIAL1_PORT == 31
+#define UART1_TX_PIN 10
+#define UART1_TX_PORT GPIOC
+#define UART1_RX_PIN 11
+#define UART1_RX_PORT GPIOC
+#define UART1_AF __HAL_AFIO_REMAP_USART3_PARTIAL
+#define UART1 usartN(3)
+#define UART1_IRQ usartint(3)
+#define UART1_IRQHandler usarthandler(3)
+#define UART1_CLK_ENABLE usartclken(3)
+#define UART1_CLK HAL_RCC_GetPCLK1Freq
+#elif SERIAL1_PORT == 4
+#define UART1_TX_PIN 10
+#define UART1_TX_PORT GPIOC
+#define UART1_RX_PIN 11
+#define UART1_RX_PORT GPIOC
+#define UART1 UART4
+#define UART1_IRQ UART4_IRQn
+#define UART1_IRQHandler UART4_IRQHandler
+#define UART1_CLK_ENABLE __HAL_RCC_UART4_CLK_ENABLE
+#define UART1_CLK HAL_RCC_GetPCLK1Freq
+#elif SERIAL1_PORT == 5
+#define UART1_TX_PIN 12
+#define UART1_TX_PORT GPIOC
+#define UART1_RX_PIN 2
+#define UART1_RX_PORT GPIOD
+#define UART1 UART5
+#define UART1_IRQ UART5_IRQn
+#define UART1_IRQHandler UART5_IRQHandler
+#define UART1_CLK_ENABLE __HAL_RCC_UART5_CLK_ENABLE
+#define UART1_CLK HAL_RCC_GetPCLK1Freq
+#else
+#error Code has to be added to support serial port 1
 #endif
 
 static io_stream_properties_t serial[] = {
 #if SERIAL_PORT
     {
-      .type = StreamType_Serial,
-      .instance = 0,
-      .flags.claimable = On,
-      .flags.claimed = Off,
-      .flags.connected = On,
-      .flags.can_set_baud = On,
-      .flags.modbus_ready = On,
-      .claim = serialInit
+        .type = StreamType_Serial,
+        .instance = 0,
+        .flags.claimable = On,
+        .flags.claimed = Off,
+        .flags.can_set_baud = On,
+        .flags.modbus_ready = On,
+        .claim = serialInit
     },
 #endif
 #if SERIAL1_PORT
     {
-      .type = StreamType_Serial,
-      .instance = 1,
-      .flags.claimable = On,
-      .flags.claimed = Off,
-      .flags.connected = On,
-      .flags.can_set_baud = On,
-      .flags.modbus_ready = On,
-      .claim = serial1Init
+        .type = StreamType_Serial,
+        .instance = 1,
+        .flags.claimable = On,
+        .flags.claimed = Off,
+        .flags.can_set_baud = On,
+        .flags.modbus_ready = On,
+        .claim = serial1Init
     }
 #endif
 };
@@ -403,7 +519,7 @@ const io_stream_t *serialInit (uint32_t baud_rate)
 {
     static const io_stream_t stream = {
         .type = StreamType_Serial,
-        .state.connected = On,
+        .is_connected = stream_connected,
         .read = serialGetC,
         .write = serialWriteS,
         .write_char = serialPutC,
@@ -667,7 +783,7 @@ const io_stream_t *serial1Init (uint32_t baud_rate)
     static const io_stream_t stream = {
         .type = StreamType_Serial,
         .instance = 1,
-        .state.connected = On,
+        .is_connected = stream_connected,
         .read = serial1GetC,
         .write = serial1WriteS,
         .write_n =  serial1Write,
@@ -730,6 +846,9 @@ void UART2_IRQHandler (void)
                 rxbuf1.head = next_head;                         // and update pointer
             }
         }
+#ifdef BOARD_BTT_SKR_MINI_E3_V20 // restricting to just this board. Ref. https://github.com/grblHAL/STM32F1xx/issues/49
+        UART1->CR1 |= USART_CR1_RXNEIE;
+#endif
     }
 
     if((UART2->SR & USART_SR_TXE) && (UART2->CR1 & USART_CR1_TXEIE)) {
